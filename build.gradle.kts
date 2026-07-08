@@ -20,6 +20,7 @@ dependencies {
     implementation("org.jdbi:jdbi3-sqlobject")
     implementation("com.h2database:h2:2.4.240")
     implementation("org.flywaydb:flyway-core:12.10.0")
+    implementation("org.eclipse.angus:angus-mail:2.1.0-M1")
 }
 
 tasks.test {

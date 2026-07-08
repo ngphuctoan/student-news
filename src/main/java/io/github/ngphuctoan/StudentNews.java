@@ -1,16 +1,18 @@
 package io.github.ngphuctoan;
 
+import jakarta.mail.MessagingException;
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class StudentNews {
     public static final String DB_URL = "jdbc:h2:file:./data/cache";
 
-    static void main() throws IOException {
+    static void main() throws IOException, MessagingException {
         // Configure Flyway migration
         Flyway flyway = Flyway.configure().dataSource(DB_URL, "meep", null).load();
         // Start the migration
@@ -20,30 +22,29 @@ public class StudentNews {
         Jdbi jdbi = Jdbi.create(DB_URL, "meep", "");
         jdbi.installPlugin(new SqlObjectPlugin());
 
-        // Asks for credentials in console for now
-        String studentId = IO.readln("Student ID: ");
-        String password = IO.readln("Password: ");
+        String studentId = System.getenv("STUDENT_ID");
+        String password = System.getenv("PASSWORD");
+
+        assert studentId != null;
+        assert password != null;
 
         NewsClient client = new NewsClient();
         // Get the first 20 news
         List<News> newsList = client.getNews(studentId, password);
 
-        // Debug length of news list
-        IO.println(newsList.size());
+        NewsCacheDao dao = jdbi.onDemand(NewsCacheDao.class);
 
-        // Get news list from cache and filter out news that aren't in cache
-        List<News> cachedNewsList = jdbi.withExtension(NewsDao.class, NewsDao::listNews);
-        List<News> newNewsList = newsList.stream().filter(news -> cachedNewsList.stream().noneMatch(cachedNews -> cachedNews.id() == news.id())).toList();
+        List<News> cachedNewsList = dao.listAll();
+        List<Integer> cachedNewsIds = cachedNewsList.stream().map(News::id).toList();
 
-        // Debug news lists
-        IO.println(newNewsList);
-        IO.println("---");
-        IO.println(cachedNewsList);
+        List<News> filteredNewsList = new ArrayList<>();
+        MailManager mailer = new MailManager();
+        for (News news : newsList) {
+            if (cachedNewsIds.contains(news.id())) continue;
+            mailer.sendNewsMail(news);
+            filteredNewsList.add(news);
+        }
 
-        // Add new news to cache
-        jdbi.withExtension(NewsDao.class, dao -> {
-            for (News news : newNewsList) dao.insertBean(news);
-            return null;
-        });
+        dao.insertMany(filteredNewsList);
     }
 }
