@@ -7,7 +7,7 @@ import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import java.io.IOException;
 import java.util.List;
 
-public class Main {
+public class StudentNews {
     public static final String DB_URL = "jdbc:h2:file:./data/cache";
 
     static void main() throws IOException {
