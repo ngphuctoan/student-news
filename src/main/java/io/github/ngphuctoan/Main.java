@@ -1,10 +1,9 @@
 package io.github.ngphuctoan;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 public class Main {
-    static void main() throws IOException, URISyntaxException {
+    static void main() throws IOException {
         String studentId = IO.readln("Student ID: ");
         String password = IO.readln("Password: ");
 
