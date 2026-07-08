@@ -1,9 +1,15 @@
 plugins {
     id("java")
+    id("application")
+    id("com.gradleup.shadow") version "9.5.1"
 }
 
 group = "io.github.ngphuctoan"
 version = "1.0-SNAPSHOT"
+
+application {
+    mainClass.set("io.github.ngphuctoan.StudentNews")
+}
 
 repositories {
     mavenCentral()

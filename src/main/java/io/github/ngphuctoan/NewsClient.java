@@ -75,6 +75,14 @@ public class NewsClient {
 
         // Get the first 20 result of the news, too lazy to handle pagination :b
         Document doc = session.newRequest("https://studentnews.tdtu.edu.vn/Thongbao").get();
-        return NewsParser.parseNews(doc);
+        return NewsParser.parseNews(doc, id -> {
+            try {
+                return session.newRequest("https://studentnews.tdtu.edu.vn/Thongbao/Detail/" + id).get();
+            } catch (Exception err) {
+                //noinspection CallToPrintStackTrace
+                err.printStackTrace();
+                return null;
+            }
+        });
     }
 }

@@ -29,11 +29,7 @@ public class MailManager {
         msg.setFrom(new InternetAddress(System.getenv("MAIL_FROM")));
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(System.getenv("MAIL_TO")));
         msg.setSubject(news.title());
-        msg.setText("""
-                %s
-                
-                Chi tiết: https://studentnews.tdtu.edu.vn/ThongBao/Detail/%s
-                """.formatted(news.summary(), news.id()));
+        msg.setContent(news.content(), "text/html; charset=utf-8");
         Transport.send(msg);
     }
 }
