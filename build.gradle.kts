@@ -10,9 +10,6 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:6.0.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     implementation("org.jsoup:jsoup:1.22.2")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.22.0")
     implementation("org.jetbrains:annotations:26.0.2")
