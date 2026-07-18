@@ -48,3 +48,6 @@ bin/
 ### Env ###
 .env*
 !.env.schema
+
+### Logback ###
+/logs/

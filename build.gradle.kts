@@ -35,6 +35,8 @@ dependencies {
     implementation(libs.h2)
     implementation(libs.flyway.core)
     implementation(libs.jetbrains.annotations)
+    implementation(libs.slf4j.api)
+    runtimeOnly(libs.logback.classic)
 }
 
 tasks.compileJava {
