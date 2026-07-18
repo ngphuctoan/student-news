@@ -7,18 +7,19 @@ import org.jsoup.parser.Parser;
 import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class NewsParser {
-    public static List<News> parseNews(Document doc, Function<Integer, Document> getNewsContentDoc) {
-        List<News> newsList = new ArrayList<>();
+public class NotificationParser {
+    public static List<Notification> parseNotifications(Document doc) {
+        List<Notification> newsList = new ArrayList<>();
 
-        Elements allNewsEl = doc.select("#div_lstThongBao > .list > .list-item");
-        for (Element newsEl : allNewsEl) {
+        Elements allNotificationEl = doc.select("#div_lstThongBao > .list > .list-item");
+        for (Element newsEl : allNotificationEl) {
             Element titleEl = newsEl.selectFirst(".title");
             Element summaryEl = newsEl.selectFirst(".desc");
             Element linkEl = newsEl.selectFirst(".link-detail");
@@ -35,30 +36,21 @@ public class NewsParser {
             String title = titleEl.attr("title");
             String summary = summaryEl.text();
 
-            // Get news content
-            Document newsContentDoc = getNewsContentDoc.apply(id);
-            String content = newsContentDoc != null ? parseNewsContent(newsContentDoc, id) : null;
-
-            // Skip content for now since it's encoded in a script tag
-            newsList.add(new News(id, title, summary, content));
+            // Skip details for now since it's encoded in a script tag
+            newsList.add(new Notification(id, title, summary, new Date()));
         }
 
         return newsList;
     }
 
-    // Override for optional getNewsContentDoc param
-    public static List<News> parseNews(Document doc) {
-        return parseNews(doc, _ -> null);
-    }
-
-    private static String parseNewsContent(Document doc, int id) {
+    public static String parseNotificationDetails(Document doc, int id) throws IOException {
         Element contentScriptEl = doc.selectFirst(".page-content > script:not([src])");
-        assert contentScriptEl != null;
+        if (contentScriptEl == null) throw new IOException("Cannot find the script in .page-content");
         String contentScript = contentScriptEl.html();
 
         Pattern encodedHtmlPattern = Pattern.compile("^ *var tmp = '(.+)';$", Pattern.MULTILINE);
         Matcher matcher = encodedHtmlPattern.matcher(contentScript);
-        if (!matcher.find()) return null;
+        if (!matcher.find()) throw new IOException("Cannot find the raw HTML inside the script's temporary variable");
 
         String html = Parser.unescapeEntities(matcher.group(1), false);
         Document contentDoc = Jsoup.parse(html);

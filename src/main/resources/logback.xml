@@ -1,19 +1,55 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <configuration>
-    <import class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"/>
-    <import class="ch.qos.logback.core.FileAppender"/>
+    <import class="ch.qos.logback.core.ConsoleAppender"/>
+    <import class="ch.qos.logback.core.rolling.RollingFileAppender"/>
+    <import class="ch.qos.logback.classic.filter.ThresholdFilter"/>
+    <import class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"/>
 
-    <appender name="STDOUT" class="FileAppender">
-        <file>logs/app.log</file>
-        <encoder class="PatternLayoutEncoder">
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+    <property
+            name="SHARED_LOG_PATTERN"
+            value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{0} - %msg %kvp%n"
+    />
+
+    <appender name="CONSOLE" class="ConsoleAppender">
+        <target>System.err</target>
+
+        <filter class="ThresholdFilter">
+            <level>${LOG_INFO:-INFO}</level>
+        </filter>
+
+        <encoder>
+            <pattern>${SHARED_LOG_PATTERN}</pattern>
         </encoder>
     </appender>
 
-    <logger name="org.flywaydb" level="WARN" />
+    <appender name="ROLLING_FILE" class="RollingFileAppender">
+        <file>logs/studentnews.latest.log</file>
 
-    <root level="INFO">
-        <appender-ref ref="STDOUT"/>
+        <filter class="ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <rollingPolicy class="SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>
+                logs/studentnews.%d{yyyy-MM-dd}.%i.log.gz
+            </fileNamePattern>
+
+            <maxFileSize>5MB</maxFileSize>
+            <totalSizeCap>200MB</totalSizeCap>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>${SHARED_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.flywaydb" level="WARN"/>
+    <logger name="org.jdbi" level="WARN"/>
+
+    <root level="TRACE">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ROLLING_FILE"/>
     </root>
 </configuration>

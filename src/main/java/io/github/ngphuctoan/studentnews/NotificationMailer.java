@@ -6,10 +6,10 @@ import jakarta.mail.internet.MimeMessage;
 
 import java.util.Properties;
 
-public class MailManager {
+public class NotificationMailer {
     private final Session session;
 
-    public MailManager() {
+    public NotificationMailer() {
         Properties props = new Properties();
         props.put("mail.smtp.host", System.getenv("SMTP_HOST"));
         props.put("mail.smtp.port", System.getenv("SMTP_PORT"));
@@ -24,12 +24,14 @@ public class MailManager {
         });
     }
 
-    public void sendNewsMail(News news) throws MessagingException {
+    public void sendMail(Notification notification) throws MessagingException {
         Message msg = new MimeMessage(session);
         msg.setFrom(new InternetAddress(System.getenv("MAIL_FROM")));
         msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(System.getenv("MAIL_TO")));
-        msg.setSubject(news.title());
-        msg.setContent(news.content(), "text/html; charset=utf-8");
+        msg.setSubject(notification.title());
+        String details = notification.details();
+        String content = details != null && details.isBlank() ? details : notification.summary();
+        msg.setContent(content, "text/html; charset=utf-8");
         Transport.send(msg);
     }
 }
