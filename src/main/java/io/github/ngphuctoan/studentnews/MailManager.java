@@ -1,4 +1,4 @@
-package io.github.ngphuctoan;
+package io.github.ngphuctoan.studentnews;
 
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;

@@ -1,4 +1,4 @@
-package io.github.ngphuctoan;
+package io.github.ngphuctoan.studentnews;
 
 import org.jetbrains.annotations.Nullable;
 

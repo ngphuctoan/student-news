@@ -4,31 +4,39 @@ plugins {
     id("com.gradleup.shadow") version "9.5.1"
 }
 
-group = "io.github.ngphuctoan"
+group = "io.github.ngphuctoan.studentnews"
 version = "1.0-SNAPSHOT"
 
 application {
-    mainClass.set("io.github.ngphuctoan.StudentNews")
+    mainClass.set("io.github.ngphuctoan.studentnews.Main")
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    // Load bill of materials (BOM) for Jdbi.
-    implementation(platform("org.jdbi:jdbi3-bom:3.54.0"))
-
-    implementation("org.jsoup:jsoup:1.22.2")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.22.0")
-    implementation("org.jetbrains:annotations:26.0.2")
-    implementation("org.jdbi:jdbi3-core")
-    implementation("org.jdbi:jdbi3-sqlobject")
-    implementation("com.h2database:h2:2.4.240")
-    implementation("org.flywaydb:flyway-core:12.10.0")
-    implementation("org.eclipse.angus:angus-mail:2.1.0-M1")
+dependencyLocking {
+    lockAllConfigurations()
 }
 
-tasks.test {
-    useJUnitPlatform()
+dependencies {
+    implementation(platform(libs.jdbi3.bom))
+    implementation(libs.jsoup)
+    implementation(libs.jackson.core.databind)
+    implementation(libs.angus.mail)
+    implementation(libs.jdbi3.core)
+    implementation(libs.jdbi3.sqlobject)
+    implementation(libs.h2)
+    implementation(libs.flyway.core)
+    implementation(libs.jetbrains.annotations)
+}
+
+tasks.compileJava {
+    options.release = 25
 }

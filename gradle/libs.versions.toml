@@ -1,0 +1,19 @@
+[versions]
+jsoup = "1.22.2"
+jackson = "2.22.0"
+angusMail = "2.1.0-M1"
+jdbi3Bom = "3.54.0"
+h2 = "2.4.240"
+flyway = "12.10.0"
+jetbrainsAnnotations = "26.0.2"
+
+[libraries]
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+jackson-core-databind = { group = "com.fasterxml.jackson.core", name = "jackson-databind", version.ref = "jackson" }
+angus-mail = { group = "org.eclipse.angus", name = "angus-mail", version.ref = "angusMail" }
+jdbi3-bom = { group = "org.jdbi", name = "jdbi3-bom", version.ref = "jdbi3Bom" }
+jdbi3-core = { group = "org.jdbi", name = "jdbi3-core" }
+jdbi3-sqlobject = { group = "org.jdbi", name = "jdbi3-sqlobject" }
+h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
+flyway-core = { group = "org.flywaydb", name = "flyway-core", version.ref = "flyway" }
+jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrainsAnnotations" }
