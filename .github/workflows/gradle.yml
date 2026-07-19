@@ -10,6 +10,7 @@ name: Build and upload fat JAR
 on:
   push:
     branches: [ "main" ]
+    tags: ["v*"]
   pull_request:
     branches: [ "main" ]
 
