@@ -34,7 +34,14 @@ jobs:
       uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
     - name: Shadow JAR with Gradle Wrapper
-      run: ./gradlew shadowJar
+      shell: bash
+      run: |
+        if [[ "${{ github.ref_type }}" == "tag" ]]; then
+          VERSION="${{ github.ref_name }}"
+          ./gradlew shadowJar -Pversion="${VERSION#v}"
+        else
+          ./gradlew shadowJar
+        fi
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.
@@ -59,7 +66,7 @@ jobs:
       with:
         # Name of the artifact to upload.
         # Optional. Default is 'artifact'
-        name: studentnews
+        name: studentnews-${{ github.ref_name }}
     
         # A file, directory or wildcard pattern that describes what to upload
         # Required.
