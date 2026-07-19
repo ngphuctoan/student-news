@@ -8,6 +8,7 @@
 name: Build and upload fat JAR
 
 on:
+  workflow_dispatch:
   push:
     branches: [ "main" ]
     tags: ["v*"]
@@ -19,7 +20,7 @@ jobs:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
     - uses: actions/checkout@v4
