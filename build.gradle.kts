@@ -1,11 +1,20 @@
+import java.time.LocalDate
+import java.time.ZoneOffset
+import java.time.format.DateTimeFormatter
+
 plugins {
     id("java")
     id("application")
     id("com.gradleup.shadow") version "9.5.1"
 }
 
+val next: String = providers.gradleProperty("nextReleaseVersion").orElse("0.0.0").get()
+val date: String = LocalDate.now(ZoneOffset.UTC).format(DateTimeFormatter.BASIC_ISO_DATE)
+val hash: Provider<String> =
+    providers.exec { commandLine("git", "rev-parse", "--short=7", "HEAD") }.standardOutput.asText.map(String::trim)
+
 group = "io.github.ngphuctoan.studentnews"
-version = "1.0-SNAPSHOT"
+version = providers.gradleProperty("version").orElse(hash.map { "$next-dev.$date.$it" }).get()
 
 application {
     mainClass.set("io.github.ngphuctoan.studentnews.Main")
