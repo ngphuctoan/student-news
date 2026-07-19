@@ -36,6 +36,7 @@
             </fileNamePattern>
 
             <maxFileSize>5MB</maxFileSize>
+            <maxHistory>30</maxHistory>
             <totalSizeCap>200MB</totalSizeCap>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>

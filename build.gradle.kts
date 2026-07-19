@@ -17,7 +17,7 @@ group = "io.github.ngphuctoan.studentnews"
 version = providers.gradleProperty("version").orElse(hash.map { "$next-dev.$date.$it" }).get()
 
 application {
-    mainClass.set("io.github.ngphuctoan.studentnews.Main")
+    mainClass = "Main"
 }
 
 java {
@@ -51,3 +51,10 @@ dependencies {
 tasks.compileJava {
     options.release = 25
 }
+
+tasks.shadowJar {
+    manifest {
+        attributes["Main-Class"] = "Main"
+    }
+}
+
